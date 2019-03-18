@@ -1,5 +1,4 @@
 ui <- fluidPage(
-  #App layout has theme selector to avoid stagnant themes
   themeSelector(),
   h1("Genrify",style="font-family:Arial Black"),
   #br(),
@@ -9,11 +8,16 @@ ui <- fluidPage(
                 value = "The Beatles",width="40%"),
       div(style="float:center",
         actionButton("Action","Search")),
+        actionButton("submit", "Submit"),
+        downloadButton("downloadData", "Download"),
+        actionButton("delete", "Delete All Data"),
       uiOutput("Information"),
-      plotOutput("Major",height = "250px")
-    ),
-    fluidRow(
-      div(style="border:1px solid grey",plotOutput("Radar",height = "500px",width = "500px"))#,
+      plotOutput("Major",height = "250px"),
+      tags$hr(),
+      dataTableOutput("responses")
+    )#,
+    #fluidRow(
+      #div(style="border:1px solid grey",plotOutput("Radar",height = "500px",width = "500px")),
       #img(src="meaning.png",style="width:100%")
-  )
+  #)
 )

@@ -1,3 +1,57 @@
+
+outputDir <- "responses"
+
+# Define the fields we want to save from the form
+fields <- c("name") #, "used_shiny", "r_num_years")
+
+saveData <- function(data) {
+  # transpose data to wide format
+  data <- t(data)
+  
+  # Create a unique file name
+  fileName <- sprintf(
+    "%s_%s.csv", 
+    as.integer(Sys.time()), 
+    digest::digest(data)
+  )
+  
+  # Write the file to the local system
+  write.csv(
+    x = data,
+    file = file.path(outputDir, fileName), 
+    row.names = FALSE, quote = TRUE
+  )
+}
+
+loadData <- function() {
+  # read all the files into a list
+  files <- list.files(outputDir, full.names = TRUE)
+  
+  if (length(files) == 0) {
+    # create empty data frame with correct columns
+    data <- data.frame(
+      name = character(),
+      #used_shiny = logical(),
+      #r_num_years = integer(),
+      submit_time = as.Date(character())
+    )
+  } else {
+    data <- lapply(files, read.csv, stringsAsFactors = FALSE) 
+    
+    # Concatenate all data together into one data.frame
+    data <- do.call(rbind, data)
+  }
+  
+  data
+}
+
+deleteData <- function() {
+  # Read all the files into a list
+  files <- list.files(outputDir, full.names = TRUE)
+  
+  lapply(files, file.remove)
+}
+
 #take in a list of artists?
 library(shiny)
 library(spotifyr)
@@ -44,7 +98,7 @@ Artist_Server = function(names){
 }
 
 # Server
-server <- function(input, output) {
+server <- function(input, output, session) {
   # Look up
   observeEvent(input$Action, {
     Element = Artist_Server(input$Artist)
@@ -90,4 +144,57 @@ server <- function(input, output) {
       }
     })
   })
+  
+  # When the Submit button is clicked, save the form data
+  observeEvent(input$submit, {
+    data <- sapply(fields, function(x) input[[x]])
+    data$submit_time <- date()
+    saveData(data)
+  })
+  
+  # When the Delete button is clicked, delete all of the saved data files
+  observeEvent(input$delete, {
+    deleteData()
+  })
+  
+  # Show the previous responses in a reactive table ----
+  output$responses <- renderDataTable({
+    # update with current response when Submit or Delete are clicked
+    input$submit 
+    input$delete
+    
+    # reset values
+    updateTextInput(session, "name", value = "")
+    #updateCheckboxInput(session, "used_shiny", value = FALSE)
+    #updateSliderInput(session, "r_num_years", value = 0)
+    
+    loadData()
+  })
+  
+  # Downloadable csv of selected dataset ----
+  output$downloadData <- downloadHandler(
+    filename = "data.csv",
+    content = function(file) {
+      write.csv(loadData(), file, row.names = FALSE, quote= TRUE)
+    }
+  )
+  responses_data <- reactive({
+    input$Artist
+    load_data(input$storage)
+  })
+  
+  # Show the responses in a table
+  output$responsesTable <- DT::renderDataTable(
+    DT::datatable(
+      responses_data(),
+      rownames = FALSE,
+      options = list(searching = FALSE, lengthChange = FALSE, scrollX = TRUE)
+    )
+  )
+  
+  
+  
+  
+  
+  
 }
