@@ -1,4 +1,5 @@
 ui <- fluidPage(
+  #App layout has theme selector to avoid stagnant themes
   themeSelector(),
   h1("Genrify",style="font-family:Arial Black"),
   #br(),
