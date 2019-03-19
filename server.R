@@ -1,8 +1,9 @@
-
+Sys.setenv(SPOTIFY_CLIENT_ID = '35a88c70184949efa6126bd6410e0c3b')
+Sys.setenv(SPOTIFY_CLIENT_SECRET = '2fdf692f988646e5bf44752b3a8a3e86')
 outputDir <- "responses"
 
 # Define the fields we want to save from the form
-fields <- c("name") #, "used_shiny", "r_num_years")
+fields <- c("artist_name","submit_time")
 
 saveData <- function(data) {
   # transpose data to wide format
@@ -30,13 +31,13 @@ loadData <- function() {
   if (length(files) == 0) {
     # create empty data frame with correct columns
     data <- data.frame(
-      name = character(),
+      artist_name = character(),
       #used_shiny = logical(),
       #r_num_years = integer(),
       submit_time = as.Date(character())
     )
   } else {
-    data <- lapply(files, read.csv, stringsAsFactors = FALSE) 
+    data <- lapply(files, read.csv, stringsAsFactors = FALSE)
     
     # Concatenate all data together into one data.frame
     data <- do.call(rbind, data)
@@ -101,6 +102,7 @@ Artist_Server = function(names){
 server <- function(input, output, session) {
   # Look up
   observeEvent(input$Action, {
+    
     Element = Artist_Server(input$Artist)
     # Information
     output$Information <- renderUI({
@@ -149,6 +151,7 @@ server <- function(input, output, session) {
   observeEvent(input$submit, {
     data <- sapply(fields, function(x) input[[x]])
     data$submit_time <- date()
+    data$artist_name<-input$Artist
     saveData(data)
   })
   
@@ -164,7 +167,7 @@ server <- function(input, output, session) {
     input$delete
     
     # reset values
-    updateTextInput(session, "name", value = "")
+    updateTextInput(session, "artist_name", value = "")
     #updateCheckboxInput(session, "used_shiny", value = FALSE)
     #updateSliderInput(session, "r_num_years", value = 0)
     
@@ -178,8 +181,8 @@ server <- function(input, output, session) {
       write.csv(loadData(), file, row.names = FALSE, quote= TRUE)
     }
   )
-  responses_data <- reactive({
-    input$Artist
+  responses_data<- reactive({
+    input$submit
     load_data(input$storage)
   })
   
@@ -187,7 +190,7 @@ server <- function(input, output, session) {
   output$responsesTable <- DT::renderDataTable(
     DT::datatable(
       responses_data(),
-      rownames = FALSE,
+      #rownames = FALSE,
       options = list(searching = FALSE, lengthChange = FALSE, scrollX = TRUE)
     )
   )
@@ -196,5 +199,5 @@ server <- function(input, output, session) {
   
   
   
-  
 }
+
