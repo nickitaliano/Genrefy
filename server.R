@@ -23,7 +23,6 @@ saveData <- function(data) {
     row.names = FALSE, quote = TRUE
   )
 }
-
 loadData <- function() {
   # read all the files into a list
   files <- list.files(outputDir, full.names = TRUE)
@@ -194,12 +193,6 @@ server <- function(input, output, session) {
       options = list(searching = FALSE, lengthChange = FALSE, scrollX = TRUE)
     )
   )
-  
-  DT = data.table(
-    artname = c("Adele","Diplo","MC HAMMER"),
-    id = 1:3)
-  
-  <-DT$artname#responses_data()
   
   
 }

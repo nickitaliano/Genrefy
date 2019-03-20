@@ -1,3 +1,28 @@
+ui <- fluidPage(
+  themeSelector(),
+  titlePanel("Genrify"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      textInput("Artist", h4("Search for a particular Artist",style="font-family:Comic Sans MS"), 
+                value = "Adele",width="40%"),
+      div(style="float:center",
+          actionButton("Action","Search"),
+          actionButton("submit", "Submit"),
+          downloadButton("downloadData", "Download"),
+          actionButton("delete", "Delete All Data"))
+    ),
+    mainPanel(
+      uiOutput("Information"),
+      plotOutput("Major",height = "250px"),
+      tags$hr(),
+      dataTableOutput("responses")
+      
+    )
+  )
+)
+
+
 # ui <- fluidPage(
 #   themeSelector(),
 #   h1("Genrify",style="font-family:Arial Black"),
@@ -30,26 +55,3 @@
 
 
 
-ui <- fluidPage(
-  themeSelector(),
-  titlePanel("Genrify"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      textInput("Artist", h4("Search for a particular Artist",style="font-family:Comic Sans MS"), 
-                value = "Adele",width="40%"),
-      div(style="float:center",
-          actionButton("Action","Search"),
-          actionButton("submit", "Submit"),
-          downloadButton("downloadData", "Download"),
-          actionButton("delete", "Delete All Data"))
-      ),
-    mainPanel(
-      uiOutput("Information"),
-      plotOutput("Major",height = "250px"),
-      tags$hr(),
-      dataTableOutput("responses")
-      
-    )
-  )
-)
