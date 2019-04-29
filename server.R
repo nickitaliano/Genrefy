@@ -1,5 +1,5 @@
-Sys.setenv(SPOTIFY_CLIENT_ID = '35a88c70184949efa6126bd6410e0c3b')
-Sys.setenv(SPOTIFY_CLIENT_SECRET = '2fdf692f988646e5bf44752b3a8a3e86')
+Sys.setenv(SPOTIFY_CLIENT_ID = 'YOURSPOTIFYCLIENTID')
+Sys.setenv(SPOTIFY_CLIENT_SECRET = 'YOURSPOTIFYCLIENTSECRET')
 outputDir <- "responses"
 
 # Define the fields we want to save from the form
