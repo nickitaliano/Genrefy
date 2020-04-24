@@ -1,2 +1,2 @@
-# Visualize Music Data with Spotify API and R Shiny
+# Visualize Music Data using Spotify's API and R with Shiny!
 This is a line from rstudio.
